@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "/api",
+  baseURL: "https://hackthon-hub-backend.onrender.com/api",
 });
 
 api.interceptors.request.use((config) => {
