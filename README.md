@@ -29,3 +29,4 @@ API base URL logic in `src/lib/api.js` (or keep the `/api` proxy pattern
 if serving frontend and backend from the same domain via a reverse proxy).
 "# hackthon" 
 "# hackthon" 
+"# hackthon" 
