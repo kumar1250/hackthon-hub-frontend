@@ -57,7 +57,7 @@ export default function ProblemStatements() {
               {problems.map((p, i) => (
                 <Reveal key={p.id} delay={(i % 6) * 60}>
                   <div
-                    className={`rounded-xl border ${TRACK_ACCENTS[i % TRACK_ACCENTS.length]} bg-surface p-4 transition-all hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)] sm:p-5`}
+                    className={`rounded-xl border ${TRACK_ACCENTS[i % TRACK_ACCENTS.length]} bg-surface p-4 transition-all hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(76,29,149,0.15)] sm:p-5`}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <h3 className="font-display text-base font-semibold leading-snug text-paper sm:text-lg">

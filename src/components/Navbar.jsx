@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
 import { EVENT } from "../lib/constants";
+import { cn } from "../lib/cn";
+import logo from "../assets/logo.png";
 
 const LINKS = [
   { to: "/problem-statements", label: "Problems" },
@@ -14,9 +18,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    setOpen(false);
-  }, [location.pathname]);
+  useEffect(() => setOpen(false), [location.pathname]);
 
   useEffect(() => {
     function onScroll() {
@@ -29,21 +31,28 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-30 mx-auto w-full border-b border-line/50 bg-white/95 px-5 py-4 shadow-sm transition-all duration-300 backdrop-blur-sm sm:px-6 sm:py-5 md:px-10 ${
-        scrolled ? "shadow-lg" : ""
-      }`}
+      className={cn(
+        "sticky top-0 z-30 w-full px-5 py-4 transition-all duration-300 sm:px-6 sm:py-5 md:px-10",
+        scrolled ? "glass border-b border-line/70" : "bg-transparent"
+      )}
     >
-      <div className="flex items-center justify-between">
-        <Link to="/" className="group flex items-center gap-2.5">
-          <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal via-sky to-violet font-mono text-sm font-bold text-ink shadow-[0_4px_20px_rgba(102,119,255,0.25)] transition-transform group-hover:-rotate-6 group-hover:scale-105">
-            &lt;/&gt;
-          </span>
-          <span className="font-display text-base font-bold tracking-tight text-ink sm:text-lg">
-            {EVENT.name}
+      <div className="mx-auto flex max-w-6xl items-center justify-between">
+        <Link to="/" className="group flex items-center gap-3">
+          <img
+            src={logo}
+            alt={`${EVENT.college} crest`}
+            className="h-11 w-11 shrink-0 rounded-full object-contain shadow-[0_4px_20px_-6px_rgba(43,27,16,0.45)] transition-transform duration-300 group-hover:scale-105 sm:h-12 sm:w-12"
+          />
+          <span className="flex flex-col leading-tight">
+            <span className="font-display text-base font-bold tracking-tight text-ink sm:text-lg">
+              {EVENT.name}
+            </span>
+            <span className="hidden font-mono text-[0.6rem] uppercase tracking-widest text-mist sm:block">
+              {EVENT.college}
+            </span>
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden items-center gap-1 font-mono text-xs uppercase tracking-widest text-mist sm:flex">
           {LINKS.map((link) => {
             const active = location.pathname === link.to;
@@ -51,12 +60,17 @@ export default function Navbar() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`relative rounded-full px-4 py-2 transition-colors ${
-                  active ? "text-ink" : "hover:text-teal"
-                }`}
+                className={cn(
+                  "relative rounded-full px-4 py-2 transition-colors",
+                  active ? "text-void" : "hover:text-cyan"
+                )}
               >
                 {active && (
-                  <span className="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-teal to-sky" />
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-cyan to-purple"
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  />
                 )}
                 {link.label}
               </Link>
@@ -64,49 +78,45 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Mobile menu button */}
         <button
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
           aria-expanded={open}
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white text-ink transition-transform duration-200 active:scale-95 sm:hidden"
+          className="glass flex h-10 w-10 items-center justify-center rounded-xl text-ink transition-transform duration-200 active:scale-95 sm:hidden"
         >
-          <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="2">
-            {open ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M6 18L18 6" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
+          {open ? <X className="h-4.5 w-4.5" /> : <Menu className="h-4.5 w-4.5" />}
         </button>
       </div>
 
-      {/* Mobile dropdown */}
-      <nav
-        className={`grid overflow-hidden font-mono text-sm uppercase tracking-widest text-mist transition-all duration-300 sm:hidden ${
-          open ? "mt-4 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-        }`}
-      >
-        <div className="flex flex-col gap-1.5 rounded-2xl border border-line bg-white p-2 min-h-0">
-          {LINKS.map((link, i) => {
-            const active = location.pathname === link.to;
-            return (
-              <Link
-                key={link.to}
-                to={link.to}
-                style={{ transitionDelay: `${i * 40}ms` }}
-                className={`rounded-xl px-4 py-3 transition-colors ${
-                  active
-                    ? "bg-gradient-to-r from-teal to-sky text-ink"
-                    : "hover:bg-surface hover:text-teal"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
+      <AnimatePresence>
+        {open && (
+          <motion.nav
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden font-mono text-sm uppercase tracking-widest text-mist sm:hidden"
+          >
+            <div className="glass mt-4 flex flex-col gap-1.5 rounded-2xl p-2">
+              {LINKS.map((link) => {
+                const active = location.pathname === link.to;
+                return (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className={cn(
+                      "rounded-xl px-4 py-3 transition-colors",
+                      active ? "bg-gradient-to-r from-cyan to-purple text-void" : "hover:bg-ink/5 hover:text-cyan"
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

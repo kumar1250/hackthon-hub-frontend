@@ -120,20 +120,25 @@ export default function Register() {
           <div className="animate-pop-in mx-auto mb-8 flex max-w-md items-center justify-center gap-2 rounded-full border border-teal/30 bg-teal/10 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-teal">
             🎉 You're in
           </div>
-          <Ticket
-            ref={ticketRef}
-            teamId={result.teamId}
-            teamName={result.teamName}
-            track={result.track}
-            leaderName={result.leaderName}
-            memberCount={result.memberCount}
-          />
+          <div className="overflow-x-auto pb-2">
+            <Ticket
+              ref={ticketRef}
+              teamId={result.teamId}
+              teamName={result.teamName}
+              track={result.track}
+              leaderName={result.leaderName}
+              memberCount={result.memberCount}
+            />
+          </div>
+          <p className="mt-2 text-center text-xs text-faint sm:hidden">
+            Scroll sideways to see the full certificate →
+          </p>
           <div className="mt-8 flex flex-col items-center gap-3">
             <DownloadPdfButton
               targetRef={ticketRef}
               filename={`ticket-${result.teamName.replace(/\s+/g, "-").toLowerCase()}`}
               label="Download ticket (PDF)"
-              background="#ffffff"
+              background="#fdfaf2"
             />
             <p className="text-center text-sm text-mist">
               Save your team ID — you may need it at check-in.

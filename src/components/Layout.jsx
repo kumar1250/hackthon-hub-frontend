@@ -7,7 +7,7 @@ export default function Layout({ children, hideFooter = false }) {
     <div className="relative min-h-screen">
       <AuroraBackground />
       <Navbar />
-      <main className="relative z-10 px-5 sm:px-6 md:px-10">{children}</main>
+      <main className="relative z-10 mx-auto max-w-6xl px-5 sm:px-6 md:px-10">{children}</main>
       {!hideFooter && <Footer />}
     </div>
   );

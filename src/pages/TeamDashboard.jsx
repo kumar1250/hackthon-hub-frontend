@@ -349,100 +349,174 @@ export default function TeamDashboard() {
             </div>
           )}
 
-          {/* ---- Team details + downloadable summary ---- */}
-          <section
-            ref={summaryRef}
-            className="mt-8 overflow-hidden rounded-4xl border border-[#ffbf5d33] bg-[#fffdf8] shadow-[0_30px_60px_rgba(15,23,42,0.08)]"
-          >
-            <div className="rounded-t-4xl bg-white p-6 sm:p-8">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="max-w-2xl">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-[#8b6a17]">
-                    {EVENT.college}
-                  </p>
-                  <h2 className="mt-2 text-3xl font-semibold uppercase tracking-[0.24em] text-[#111827] sm:text-4xl">
-                    {EVENT.name}
+          {/* ---- Team details + downloadable summary — formal BVCE letterhead ---- */}
+          <div className="mt-8 overflow-x-auto pb-2">
+            <section
+              ref={summaryRef}
+              style={{ width: "820px", margin: "0 auto", backgroundColor: PAPER, fontFamily: SANS, color: INK }}
+            >
+              <div style={{ border: `1.5px solid ${GOLD_LINE}`, borderRadius: "4px", padding: "6px" }}>
+                <div style={{ border: `1px solid ${GOLD_LINE}`, borderRadius: "2px", padding: "48px 52px" }}>
+                  {/* Letterhead */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "24px",
+                      borderBottom: `2px solid ${NAVY}`,
+                      paddingBottom: "22px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        height: "56px",
+                        width: "56px",
+                        flexShrink: 0,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "9999px",
+                        border: `2px solid ${GOLD}`,
+                        fontFamily: SERIF,
+                        fontSize: "17px",
+                        fontWeight: 700,
+                        color: NAVY,
+                      }}
+                    >
+                      BVC
+                    </div>
+                    <div style={{ flex: 1, textAlign: "center" }}>
+                      <p style={{ margin: 0, fontSize: "10.5px", letterSpacing: "0.32em", textTransform: "uppercase", color: GOLD, fontFamily: MONO }}>
+                        {EVENT.college}
+                      </p>
+                      <h1 style={{ margin: "10px 0 0", fontFamily: SERIF, fontSize: "30px", fontWeight: 700, letterSpacing: "0.03em", color: INK }}>
+                        {EVENT.name}
+                      </h1>
+                      <p style={{ margin: "6px 0 0", fontSize: "11.5px", color: SUBINK, lineHeight: 1.5 }}>{EVENT.venueLabel}</p>
+                    </div>
+                    <div
+                      style={{
+                        flexShrink: 0,
+                        borderRadius: "16px",
+                        border: `1px solid ${GOLD_LINE}`,
+                        backgroundColor: "#fffefb",
+                        padding: "10px 16px",
+                        textAlign: "center",
+                      }}
+                    >
+                      <p style={{ margin: 0, fontSize: "8.5px", letterSpacing: "0.28em", textTransform: "uppercase", color: GOLD, fontFamily: MONO }}>
+                        Summary
+                      </p>
+                      <p style={{ margin: "4px 0 0", fontSize: "12.5px", fontWeight: 700, color: INK, maxWidth: "140px", wordBreak: "break-word" }}>
+                        {team.team_name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <h2 style={{ margin: "30px 0 0", textAlign: "center", fontFamily: SERIF, fontSize: "22px", fontWeight: 700, color: INK }}>
+                    Registration Summary
                   </h2>
-                  <p className="mt-2 text-sm leading-6 text-[#475569] sm:text-base">
-                    {EVENT.venueLabel}
-                  </p>
-                </div>
-                <div className="rounded-3xl border border-[#d1fae5] bg-[#ecfdf5] px-4 py-3 text-sm text-[#047857] shadow-sm">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-[#047857]">
-                    Registration summary
-                  </p>
-                  <p className="mt-2 text-lg font-semibold text-[#111827]">{team.team_name}</p>
-                </div>
-              </div>
-            </div>
 
-            <div className="border-t border-[#ffbf5d33] bg-white p-6 sm:p-8">
-              <div className="grid gap-4 lg:grid-cols-2">
-                <DetailCard label="Team ID" value={`#${String(team.team_id).padStart(4, "0")}`} />
-                <DetailCard label="Track" value={team.track} />
-                <DetailCard label="College" value={team.college} />
-                <DetailCard label="Leader" value={`${team.leader_name} (${team.leader_roll_no})`} />
-                <DetailCard label="Leader email" value={team.leader_email} />
-                <DetailCard label="Leader phone" value={team.leader_phone} />
-                <DetailCard
-                  label="Problem statement"
-                  value={team.problem_title || "Not chosen yet"}
-                  className="lg:col-span-2"
-                />
-              </div>
+                  {/* Detail grid */}
+                  <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "28px", tableLayout: "fixed" }}>
+                    <tbody>
+                      <tr>
+                        <FieldCell label="Team ID" value={`#${String(team.team_id).padStart(4, "0")}`} />
+                        <FieldCell label="Track" value={team.track} />
+                      </tr>
+                      <tr>
+                        <FieldCell label="College" value={team.college} />
+                        <FieldCell label="Leader" value={`${team.leader_name} (${team.leader_roll_no})`} />
+                      </tr>
+                      <tr>
+                        <FieldCell label="Leader email" value={team.leader_email} />
+                        <FieldCell label="Leader phone" value={team.leader_phone} />
+                      </tr>
+                      <tr>
+                        <FieldCell label="Problem statement" value={team.problem_title || "Not chosen yet"} full />
+                      </tr>
+                    </tbody>
+                  </table>
 
-              {selectedDescription && (
-                <div className="mt-6 rounded-3xl border border-[#e2e8f0] bg-[#f8fafc] p-5">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.35em] text-[#8b6a17]">Full problem statement</p>
-                      <p className="mt-3 text-sm leading-7 text-[#334155]">{selectedDescription}</p>
+                  {selectedDescription && (
+                    <FormalNote label="Full problem statement" text={selectedDescription} />
+                  )}
+                  {team.idea && <FormalNote label="Saved idea" text={team.idea} />}
+
+                  {team.members?.length > 0 && (
+                    <div style={{ marginTop: "24px", borderRadius: "6px", overflow: "hidden", border: `1px solid ${GOLD_LINE}` }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+                        <colgroup>
+                          <col style={{ width: "12%" }} />
+                          <col style={{ width: "56%" }} />
+                          <col style={{ width: "32%" }} />
+                        </colgroup>
+                        <thead>
+                          <tr style={{ backgroundColor: NAVY }}>
+                            <SummaryTh>S.No</SummaryTh>
+                            <SummaryTh>Name</SummaryTh>
+                            <SummaryTh>Roll No</SummaryTh>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {team.members.map((m, i) => (
+                            <tr key={i} style={{ backgroundColor: i % 2 === 0 ? "#1c1a3a" : NAVY }}>
+                              <SummaryTd>{i + 1}</SummaryTd>
+                              <SummaryTd strong>{m.name}</SummaryTd>
+                              <SummaryTd>{m.roll_no || "—"}</SummaryTd>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* Footer */}
+                  <div
+                    style={{
+                      marginTop: "32px",
+                      paddingTop: "20px",
+                      borderTop: `2px solid ${NAVY}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "16px",
+                    }}
+                  >
+                    <p style={{ margin: 0, fontSize: "12px", color: SUBINK }}>
+                      {EVENT.name} · {EVENT.college}, {EVENT.place}
+                    </p>
+                    <div
+                      style={{
+                        borderRadius: "16px",
+                        border: `1px solid ${GOLD_LINE}`,
+                        backgroundColor: "#fffefb",
+                        padding: "8px 16px",
+                        fontSize: "9.5px",
+                        letterSpacing: "0.28em",
+                        textTransform: "uppercase",
+                        color: GOLD,
+                        fontFamily: MONO,
+                      }}
+                    >
+                      Code Odalrevu
                     </div>
                   </div>
                 </div>
-              )}
-
-              {team.idea && (
-                <div className="mt-6 rounded-3xl border border-[#e2e8f0] bg-[#f8fafc] p-5">
-                  <p className="text-[10px] uppercase tracking-[0.35em] text-[#8b6a17]">Saved idea</p>
-                  <p className="mt-3 text-sm leading-7 text-[#334155]">{team.idea}</p>
-                </div>
-              )}
-
-              {team.members?.length > 0 && (
-                <div className="mt-6 rounded-3xl border border-[#e2e8f0] bg-[#f8fafc] p-5">
-                  <div className="flex items-center justify-between gap-4">
-                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#8b6a17]">Team members</p>
-                    <p className="text-xs uppercase tracking-[0.3em] text-[#64748b]">{team.members.length} total</p>
-                  </div>
-                  <ul className="mt-4 space-y-2 text-sm text-paper">
-                    {team.members.map((m, i) => (
-                      <li key={i} className="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3">
-                        <p className="font-semibold">{m.name}</p>
-                        <p className="text-xs text-[#64748b]">{m.roll_no}</p>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <div className="mt-6 flex flex-col gap-4 border-t border-[#ffbf5d33] pt-6 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-[#475569]">
-                  {EVENT.name} · {EVENT.college}, {EVENT.place}
-                </p>
-                <p className="rounded-3xl border border-[#ffbf5d4d] bg-white px-4 py-3 text-[10px] uppercase tracking-[0.35em] text-[#8b6a17] shadow-sm">
-                  CODE ODALREVU
-                </p>
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
+          <p className="mt-2 text-center text-xs text-faint sm:hidden">
+            Scroll sideways to see the full sheet →
+          </p>
 
           <div className="no-print mt-4">
             <DownloadPdfButton
               targetRef={summaryRef}
               filename={`registration-${team.team_name.replace(/\s+/g, "-").toLowerCase()}`}
               label="Download summary (PDF)"
-              background="#ffffff"
+              background="#fdfaf2"
             />
           </div>
         </div>
@@ -451,11 +525,59 @@ export default function TeamDashboard() {
   );
 }
 
-function DetailCard({ label, value, className = "" }) {
+const PAPER = "#fdfaf2";
+const INK = "#161327";
+const SUBINK = "#4b465f";
+const GOLD = "#9c7a24";
+const GOLD_LINE = "rgba(156, 122, 36, 0.28)";
+const NAVY = "#141233";
+const SERIF = "'Playfair Display', Georgia, serif";
+const SANS = "'Inter', system-ui, sans-serif";
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+
+function FieldCell({ label, value, full }) {
   return (
-    <div className={`rounded-3xl border border-[#e2e8f0] bg-[#f8fafc] p-5 shadow-sm ${className}`}>
-      <p className="text-[10px] uppercase tracking-[0.35em] text-[#8b6a17]">{label}</p>
-      <p className="mt-3 text-base font-semibold text-[#111827]">{value || "—"}</p>
+    <td
+      colSpan={full ? 2 : 1}
+      style={{
+        border: `1px solid ${GOLD_LINE}`,
+        backgroundColor: "#fffefb",
+        padding: "14px 18px",
+        verticalAlign: "top",
+        wordBreak: "break-word",
+      }}
+    >
+      <p style={{ margin: 0, fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase", color: GOLD, fontFamily: MONO }}>
+        {label}
+      </p>
+      <p style={{ margin: "8px 0 0", fontSize: "14.5px", fontWeight: 600, color: INK, wordBreak: "break-word" }}>{value || "—"}</p>
+    </td>
+  );
+}
+
+function FormalNote({ label, text }) {
+  return (
+    <div style={{ marginTop: "18px", borderRadius: "6px", border: `1px solid ${GOLD_LINE}`, backgroundColor: "#fffefb", padding: "18px 20px" }}>
+      <p style={{ margin: 0, fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase", color: GOLD, fontFamily: MONO }}>
+        {label}
+      </p>
+      <p style={{ margin: "10px 0 0", fontSize: "12.5px", lineHeight: 1.7, color: SUBINK }}>{text}</p>
     </div>
+  );
+}
+
+function SummaryTh({ children }) {
+  return (
+    <th style={{ padding: "12px 14px", textAlign: "left", fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", color: "#e5c98a", fontFamily: MONO }}>
+      {children}
+    </th>
+  );
+}
+
+function SummaryTd({ children, strong }) {
+  return (
+    <td style={{ padding: "13px 14px", borderTop: "1px solid rgba(255,255,255,0.08)", fontSize: "12.5px", fontWeight: strong ? 600 : 400, color: "#f4f2fb", wordBreak: "break-word" }}>
+      {children}
+    </td>
   );
 }
