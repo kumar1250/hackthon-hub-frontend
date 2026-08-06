@@ -94,6 +94,10 @@ export default function Register() {
         teamName: form.team_name,
         track: form.track,
         leaderName: form.leader_name,
+        leaderRollNo: form.leader_roll_no,
+        leaderEmail: form.leader_email,
+        leaderPhone: form.leader_phone,
+        members: payload.members,
         memberCount: 1 + payload.members.length,
       });
     } catch (err) {
@@ -120,6 +124,44 @@ export default function Register() {
           <div className="animate-pop-in mx-auto mb-8 flex max-w-md items-center justify-center gap-2 rounded-full border border-teal/30 bg-teal/10 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-teal">
             🎉 You're in
           </div>
+          {/* ---- Mobile-only readable summary — same data, full-size plain layout ---- */}
+          <div className="mx-auto mb-8 max-w-2xl rounded-2xl border border-line bg-surface/70 p-5 backdrop-blur sm:hidden">
+            <p className="font-mono text-xs uppercase tracking-widest text-teal">
+              Registration ticket
+            </p>
+            <div className="mt-4 space-y-4">
+              <SummaryRow label="Team ID" value={`#${String(result.teamId).padStart(4, "0")}`} />
+              <SummaryRow label="Team name" value={result.teamName} />
+              <SummaryRow label="Track" value={result.track} />
+              <SummaryRow
+                label="Team leader"
+                value={result.leaderRollNo ? `${result.leaderName} (${result.leaderRollNo})` : result.leaderName}
+              />
+              <SummaryRow label="Leader email" value={result.leaderEmail} />
+              <SummaryRow label="Leader phone" value={result.leaderPhone} />
+              <SummaryRow label="Team size" value={`${result.memberCount} members`} />
+            </div>
+
+            {result.members?.length > 0 && (
+              <div className="mt-5">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-mist">
+                  Team members
+                </p>
+                <div className="mt-3 space-y-2">
+                  {result.members.map((m, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface px-3 py-2 text-sm"
+                    >
+                      <span className="font-medium text-paper">{m.name}</span>
+                      <span className="text-mist">{m.roll_no || "—"}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="overflow-x-auto pb-2">
             <Ticket
               ref={ticketRef}
@@ -127,12 +169,13 @@ export default function Register() {
               teamName={result.teamName}
               track={result.track}
               leaderName={result.leaderName}
+              leaderRollNo={result.leaderRollNo}
+              leaderEmail={result.leaderEmail}
+              leaderPhone={result.leaderPhone}
+              members={result.members}
               memberCount={result.memberCount}
             />
           </div>
-          <p className="mt-2 text-center text-xs text-faint sm:hidden">
-            Scroll sideways to see the full certificate →
-          </p>
           <div className="mt-8 flex flex-col items-center gap-3">
             <DownloadPdfButton
               targetRef={ticketRef}
@@ -418,6 +461,15 @@ const inputClass =
 function Legend({ children, color = "text-teal" }) {
   return (
     <p className={`font-mono text-xs uppercase tracking-widest ${color}`}>{children}</p>
+  );
+}
+
+function SummaryRow({ label, value }) {
+  return (
+    <div>
+      <p className="font-mono text-[10px] uppercase tracking-widest text-mist">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-paper break-words">{value || "—"}</p>
+    </div>
   );
 }
 

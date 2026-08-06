@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import { EVENT } from "../lib/constants";
 
 const Ticket = forwardRef(function Ticket(
-  { teamId, teamName, track, leaderName, memberCount },
+  { teamId, teamName, track, leaderName, leaderRollNo, leaderEmail, leaderPhone, members = [], memberCount },
   ref
 ) {
   return (
@@ -219,8 +219,21 @@ const Ticket = forwardRef(function Ticket(
             <div>Role</div>
             <div>Contact</div>
           </div>
-          <TicketRow index={1} name={leaderName || teamName} role="Team leader" contact="—" />
-          <TicketRow index={2} name="—" role="Member" contact="—" />
+          <TicketRow
+            index={1}
+            name={leaderName || teamName}
+            role="Team leader"
+            contact={leaderEmail || leaderPhone || leaderRollNo || "—"}
+          />
+          {members.map((m, i) => (
+            <TicketRow
+              key={i}
+              index={i + 2}
+              name={m.name || "—"}
+              role="Member"
+              contact={m.email || m.phone || m.roll_no || "—"}
+            />
+          ))}
         </div>
 
         <div

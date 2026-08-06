@@ -6,11 +6,11 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const adminToken = localStorage.getItem("admin_access");
-  if (adminToken && config.url?.startsWith("/admin/")) {
+  if (adminToken && config.url?.startsWith("/admin/") && config.url !== "/admin/login/") {
     config.headers.Authorization = `Bearer ${adminToken}`;
   }
   const teamToken = localStorage.getItem("team_token");
-  if (teamToken && config.url?.startsWith("/team/")) {
+  if (teamToken && config.url?.startsWith("/team/") && config.url !== "/team/login/"){
     config.headers.Authorization = `Bearer ${teamToken}`;
   }
   return config;

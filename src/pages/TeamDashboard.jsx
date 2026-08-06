@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import DownloadPdfButton from "../components/DownloadPdfButton";
 import { api } from "../lib/api";
 import { EVENT } from "../lib/constants";
+import logo from "../assets/logo.png";
 
 const CARD_COLORS = [
   { border: "border-teal", bg: "bg-teal/10", text: "text-teal", borderDim: "border-teal/40" },
@@ -29,6 +30,20 @@ export default function TeamDashboard() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const summaryRef = useRef(null);
+  const summaryWrapRef = useRef(null);
+  const [cardScale, setCardScale] = useState(1);
+
+  useEffect(() => {
+    function updateScale() {
+      const wrap = summaryWrapRef.current;
+      if (!wrap) return;
+      const available = wrap.clientWidth;
+      setCardScale(available >= 820 ? 1 : Math.max(0.32, available / 820));
+    }
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   const selectedProblem = problems.find((p) => p.id === selectedId);
   const selectedDescription = team?.problem_description || selectedProblem?.description || "";
@@ -349,11 +364,48 @@ export default function TeamDashboard() {
             </div>
           )}
 
+          {/* ---- Mobile-only readable summary — same data, full-size plain layout ---- */}
+          <div className="mt-8 rounded-2xl border border-line bg-surface/70 p-5 backdrop-blur sm:hidden">
+            <p className="font-mono text-xs uppercase tracking-widest text-teal">
+              Registration summary
+            </p>
+            <div className="mt-4 space-y-4">
+              <SummaryRow label="Team ID" value={`#${String(team.team_id).padStart(4, "0")}`} />
+              <SummaryRow label="Track" value={team.track} />
+              <SummaryRow label="College" value={team.college} />
+              <SummaryRow label="Leader" value={`${team.leader_name} (${team.leader_roll_no})`} />
+              <SummaryRow label="Leader email" value={team.leader_email} />
+              <SummaryRow label="Leader phone" value={team.leader_phone} />
+              <SummaryRow label="Problem statement" value={team.problem_title || "Not chosen yet"} />
+              {selectedDescription && <SummaryRow label="Full problem statement" value={selectedDescription} />}
+              {team.idea && <SummaryRow label="Saved idea" value={team.idea} />}
+            </div>
+
+            {team.members?.length > 0 && (
+              <div className="mt-5">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-mist">
+                  Team members
+                </p>
+                <div className="mt-3 space-y-2">
+                  {team.members.map((m, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface px-3 py-2 text-sm"
+                    >
+                      <span className="font-medium text-paper">{m.name}</span>
+                      <span className="text-mist">{m.roll_no || "—"}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* ---- Team details + downloadable summary — formal BVCE letterhead ---- */}
-          <div className="mt-8 overflow-x-auto pb-2">
+          <div ref={summaryWrapRef} className="mt-8 overflow-x-auto pb-2">
             <section
               ref={summaryRef}
-              style={{ width: "820px", margin: "0 auto", backgroundColor: PAPER, fontFamily: SANS, color: INK }}
+              style={{ width: "820px", margin: "0 auto", backgroundColor: PAPER, fontFamily: SANS, color: INK, zoom: cardScale }}
             >
               <div style={{ border: `1.5px solid ${GOLD_LINE}`, borderRadius: "4px", padding: "6px" }}>
                 <div style={{ border: `1px solid ${GOLD_LINE}`, borderRadius: "2px", padding: "48px 52px" }}>
@@ -368,24 +420,19 @@ export default function TeamDashboard() {
                       paddingBottom: "22px",
                     }}
                   >
-                    <div
+                    <img
+                      src={logo}
+                      alt={`${EVENT.college} crest`}
                       style={{
-                        display: "flex",
+                        display: "block",
                         height: "56px",
                         width: "56px",
                         flexShrink: 0,
-                        alignItems: "center",
-                        justifyContent: "center",
                         borderRadius: "9999px",
                         border: `2px solid ${GOLD}`,
-                        fontFamily: SERIF,
-                        fontSize: "17px",
-                        fontWeight: 700,
-                        color: NAVY,
+                        objectFit: "cover",
                       }}
-                    >
-                      BVC
-                    </div>
+                    />
                     <div style={{ flex: 1, textAlign: "center" }}>
                       <p style={{ margin: 0, fontSize: "10.5px", letterSpacing: "0.32em", textTransform: "uppercase", color: GOLD, fontFamily: MONO }}>
                         {EVENT.college}
@@ -507,10 +554,6 @@ export default function TeamDashboard() {
               </div>
             </section>
           </div>
-          <p className="mt-2 text-center text-xs text-faint sm:hidden">
-            Scroll sideways to see the full sheet →
-          </p>
-
           <div className="no-print mt-4">
             <DownloadPdfButton
               targetRef={summaryRef}
@@ -534,6 +577,15 @@ const NAVY = "#141233";
 const SERIF = "'Playfair Display', Georgia, serif";
 const SANS = "'Inter', system-ui, sans-serif";
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
+
+function SummaryRow({ label, value }) {
+  return (
+    <div>
+      <p className="font-mono text-[10px] uppercase tracking-widest text-mist">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-paper break-words">{value || "—"}</p>
+    </div>
+  );
+}
 
 function FieldCell({ label, value, full }) {
   return (

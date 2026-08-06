@@ -15,12 +15,21 @@ export async function downloadElementAsPdf(node, filename = "document", opts = {
   if (!node) throw new Error("Nothing to export yet.");
   const background = opts.background || "#ffffff";
 
+  // The card may be visually shrunk with CSS zoom to fit small screens.
+  // Reset it to full size just for the capture so the PDF is always
+  // full quality, then restore whatever it was.
+  const previousZoom = node.style.zoom;
+  node.style.zoom = "1";
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+
   const canvas = await html2canvas(node, {
     scale: Math.min(3, (window.devicePixelRatio || 1) * 2),
     backgroundColor: background,
     useCORS: true,
     logging: false,
   });
+
+  node.style.zoom = previousZoom;
 
   const imgData = canvas.toDataURL("image/png");
 

@@ -66,7 +66,7 @@ export default function TeamLogin() {
                 required
                 autoFocus
                 value={rollNo}
-                onChange={(e) => setRollNo(e.target.value)}
+                onChange={(e) => setRollNo(e.target.value.replace(/\s/g, ""))}
                 className="w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-sky"
                 placeholder="e.g. 21A05XXXX"
               />
