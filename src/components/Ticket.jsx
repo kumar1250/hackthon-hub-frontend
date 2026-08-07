@@ -203,8 +203,8 @@ const Ticket = forwardRef(function Ticket(
         >
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "64px minmax(0, 1fr) minmax(0, 1fr) 160px",
+              display: "flex",
+              alignItems: "center",
               gap: "16px",
               padding: "16px",
               borderBottom: "1px solid #334155",
@@ -214,10 +214,10 @@ const Ticket = forwardRef(function Ticket(
               letterSpacing: "0.35em",
             }}
           >
-            <div>S.No</div>
-            <div>Name</div>
-            <div>Role</div>
-            <div>Contact</div>
+            <div style={{ width: "40px", flexShrink: 0 }}>S.No</div>
+            <div style={{ flex: 1, minWidth: 0 }}>Name</div>
+            <div style={{ flex: 1, minWidth: 0 }}>Role</div>
+            <div style={{ width: "150px", flexShrink: 0 }}>Contact</div>
           </div>
           <TicketRow
             index={1}
@@ -345,8 +345,8 @@ function TicketRow({ index, name, role, contact }) {
   return (
     <div
       style={{
-        display: "grid",
-        gridTemplateColumns: "64px minmax(0, 1fr) minmax(0, 1fr) 160px",
+        display: "flex",
+        alignItems: "flex-start",
         gap: "16px",
         padding: "16px",
         borderBottom: "1px solid #334155",
@@ -354,10 +354,12 @@ function TicketRow({ index, name, role, contact }) {
         fontSize: "0.9375rem",
       }}
     >
-      <div>{index}</div>
-      <div style={{ color: "#ffffff" }}>{name}</div>
-      <div style={{ color: "#ffffff" }}>{role}</div>
-      <div style={{ color: "#ffffff" }}>{contact}</div>
+      <div style={{ width: "40px", flexShrink: 0 }}>{index}</div>
+      <div style={{ flex: 1, minWidth: 0, color: "#ffffff", wordBreak: "break-word" }}>{name}</div>
+      <div style={{ flex: 1, minWidth: 0, color: "#ffffff", wordBreak: "break-word" }}>{role}</div>
+      <div style={{ width: "150px", flexShrink: 0, color: "#ffffff", wordBreak: "break-word", fontSize: "0.8125rem" }}>
+        {contact}
+      </div>
     </div>
   );
 }
