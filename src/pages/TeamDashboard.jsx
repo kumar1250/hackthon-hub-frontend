@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import DownloadPdfButton from "../components/DownloadPdfButton";
 import { api } from "../lib/api";
-import { EVENT } from "../lib/constants";
+import { EVENT, TRACKS } from "../lib/constants";
 import logo from "../assets/logo.png";
+
+const MAX_TOTAL_TEAM_SIZE = 5; // leader + members, must match backend serializers.py
 
 const CARD_COLORS = [
   { border: "border-teal", bg: "bg-teal/10", text: "text-teal", borderDim: "border-teal/40" },
@@ -28,6 +30,9 @@ export default function TeamDashboard() {
   const [pendingSaveProblem, setPendingSaveProblem] = useState(null);
   const [toastMessage, setToastMessage] = useState("");
   const [error, setError] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [editForm, setEditForm] = useState(null);
+  const [savingEdit, setSavingEdit] = useState(false);
   const navigate = useNavigate();
   const summaryRef = useRef(null);
   const summaryWrapRef = useRef(null);
@@ -146,6 +151,60 @@ export default function TeamDashboard() {
     navigate("/team/login");
   }
 
+  function startEdit() {
+    setEditForm({
+      team_name: team.team_name || "",
+      track: team.track || "",
+      college: team.college || "",
+      leader_name: team.leader_name || "",
+      leader_roll_no: team.leader_roll_no || "",
+      leader_email: team.leader_email || "",
+      leader_phone: team.leader_phone || "",
+      members: (team.members || []).map((m) => ({ ...m })),
+    });
+    setEditMode(true);
+  }
+
+  function cancelEdit() {
+    setEditMode(false);
+    setEditForm(null);
+  }
+
+  function updateMemberField(i, field, value) {
+    setEditForm((f) => {
+      const members = [...f.members];
+      members[i] = { ...members[i], [field]: value };
+      return { ...f, members };
+    });
+  }
+
+  function removeMember(i) {
+    setEditForm((f) => ({ ...f, members: f.members.filter((_, idx) => idx !== i) }));
+  }
+
+  function addMember() {
+    setEditForm((f) => {
+      if (f.members.length + 1 >= MAX_TOTAL_TEAM_SIZE) return f;
+      return { ...f, members: [...f.members, { name: "", roll_no: "", email: "", phone: "" }] };
+    });
+  }
+
+  async function saveEdit() {
+    setSavingEdit(true);
+    setError("");
+    try {
+      const res = await api.patch("/team/me/", editForm);
+      setTeam(res.data);
+      setEditMode(false);
+      setEditForm(null);
+      setToastMessage("Team details updated.");
+    } catch (err) {
+      setError(err.response?.data?.error || "Couldn't save changes. Please try again.");
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
   useEffect(() => {
     if (!toastMessage) return;
     const timeout = setTimeout(() => setToastMessage(""), 3000);
@@ -174,6 +233,13 @@ export default function TeamDashboard() {
               </h1>
             </div>
             <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={startEdit}
+                className="font-mono text-xs rounded-full border border-violet/40 bg-violet/10 px-4 py-2 text-violet transition hover:bg-violet/20"
+              >
+                Edit details
+              </button>
               <button
                 type="button"
                 onClick={() => setShowProblemModal(true)}
@@ -364,6 +430,119 @@ export default function TeamDashboard() {
             </div>
           )}
 
+          {editMode && (
+            <div className="mt-8 rounded-2xl border border-line bg-surface p-6">
+              <p className="font-mono text-xs uppercase tracking-widest text-violet">
+                Edit team details
+              </p>
+
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <EditField label="Team name" value={editForm.team_name} onChange={(v) => setEditForm((f) => ({ ...f, team_name: v }))} />
+                <div>
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-mist">Track</p>
+                  <select
+                    value={editForm.track}
+                    onChange={(e) => setEditForm((f) => ({ ...f, track: e.target.value }))}
+                    className="mt-1 w-full rounded-md border border-line bg-void/40 px-3 py-1.5 text-sm text-paper outline-none focus:border-teal"
+                  >
+                    <option value="">—</option>
+                    {TRACKS.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+                <EditField label="College" value={editForm.college} onChange={(v) => setEditForm((f) => ({ ...f, college: v }))} full />
+                <EditField label="Leader name" value={editForm.leader_name} onChange={(v) => setEditForm((f) => ({ ...f, leader_name: v }))} />
+                <EditField label="Leader roll no" value={editForm.leader_roll_no} onChange={(v) => setEditForm((f) => ({ ...f, leader_roll_no: v }))} />
+                <EditField label="Leader email" value={editForm.leader_email} onChange={(v) => setEditForm((f) => ({ ...f, leader_email: v }))} />
+                <EditField label="Leader phone" value={editForm.leader_phone} onChange={(v) => setEditForm((f) => ({ ...f, leader_phone: v }))} />
+              </div>
+              <p className="mt-2 font-mono text-[11px] text-mist">
+                Heads up: changing "Leader roll no" changes what you log in with next time.
+              </p>
+
+              <div className="mt-6">
+                <div className="flex items-center justify-between">
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-mist">
+                    Team members ({editForm.members.length + 1} / {MAX_TOTAL_TEAM_SIZE} incl. leader)
+                  </p>
+                  <button
+                    onClick={addMember}
+                    disabled={editForm.members.length + 1 >= MAX_TOTAL_TEAM_SIZE}
+                    className="font-mono text-xs text-teal hover:underline disabled:cursor-not-allowed disabled:text-mist disabled:no-underline"
+                  >
+                    + Add member
+                  </button>
+                </div>
+                {editForm.members.length + 1 >= MAX_TOTAL_TEAM_SIZE && (
+                  <p className="mt-1 font-mono text-[11px] text-mist">
+                    Team is at the maximum size of {MAX_TOTAL_TEAM_SIZE} (leader + members).
+                  </p>
+                )}
+                <div className="mt-3 space-y-3">
+                  {editForm.members.map((m, i) => (
+                    <div key={i} className="rounded-lg border border-line bg-void/40 p-3">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        <input
+                          value={m.name || ""}
+                          onChange={(e) => updateMemberField(i, "name", e.target.value)}
+                          placeholder="Name"
+                          className="rounded-md border border-line bg-surface px-2 py-1 text-sm text-paper outline-none focus:border-teal"
+                        />
+                        <input
+                          value={m.roll_no || ""}
+                          onChange={(e) => updateMemberField(i, "roll_no", e.target.value)}
+                          placeholder="Roll no"
+                          className="rounded-md border border-line bg-surface px-2 py-1 text-sm text-paper outline-none focus:border-teal"
+                        />
+                        <input
+                          value={m.email || ""}
+                          onChange={(e) => updateMemberField(i, "email", e.target.value)}
+                          placeholder="Email"
+                          className="rounded-md border border-line bg-surface px-2 py-1 text-sm text-paper outline-none focus:border-teal"
+                        />
+                        <input
+                          value={m.phone || ""}
+                          onChange={(e) => updateMemberField(i, "phone", e.target.value)}
+                          placeholder="Phone"
+                          className="rounded-md border border-line bg-surface px-2 py-1 text-sm text-paper outline-none focus:border-teal"
+                        />
+                      </div>
+                      <button
+                        onClick={() => removeMember(i)}
+                        className="mt-2 font-mono text-xs text-coral hover:underline"
+                      >
+                        Remove member
+                      </button>
+                    </div>
+                  ))}
+                  {editForm.members.length === 0 && (
+                    <p className="text-sm text-mist">No members besides the leader.</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center justify-end gap-3">
+                <button
+                  onClick={cancelEdit}
+                  disabled={savingEdit}
+                  className="rounded-full border border-line px-4 py-2 font-mono text-xs uppercase tracking-wide text-mist hover:border-coral hover:text-coral disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={saveEdit}
+                  disabled={savingEdit}
+                  className="rounded-full bg-gradient-to-r from-teal to-sky px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wide text-ink disabled:opacity-50"
+                >
+                  {savingEdit ? "Saving…" : "Save changes"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!editMode && (
+            <>
           {/* ---- Mobile-only readable summary — same data, full-size plain layout ---- */}
           <div className="mt-8 rounded-2xl border border-line bg-surface/70 p-5 backdrop-blur sm:hidden">
             <p className="font-mono text-xs uppercase tracking-widest text-teal">
@@ -562,6 +741,8 @@ export default function TeamDashboard() {
               background="#fdfaf2"
             />
           </div>
+            </>
+          )}
         </div>
       </main>
     </Layout>
@@ -577,6 +758,19 @@ const NAVY = "#141233";
 const SERIF = "'Playfair Display', Georgia, serif";
 const SANS = "'Inter', system-ui, sans-serif";
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
+
+function EditField({ label, value, onChange, full }) {
+  return (
+    <div className={full ? "sm:col-span-2" : ""}>
+      <p className="font-mono text-[11px] uppercase tracking-widest text-mist">{label}</p>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full rounded-md border border-line bg-void/40 px-3 py-1.5 text-sm text-paper outline-none focus:border-teal"
+      />
+    </div>
+  );
+}
 
 function SummaryRow({ label, value }) {
   return (

@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://hackthon-hub-backend.onrender.com/api",
+  baseURL: "/api",
 });
-
+// https://hackthon-hub-backend.onrender.com
 api.interceptors.request.use((config) => {
   const adminToken = localStorage.getItem("admin_access");
   if (adminToken && config.url?.startsWith("/admin/") && config.url !== "/admin/login/") {
