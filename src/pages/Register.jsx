@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import Ticket from "../components/Ticket";
 import DownloadPdfButton from "../components/DownloadPdfButton";
@@ -32,6 +32,22 @@ export default function Register() {
   );
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [eventInfo, setEventInfo] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get("/site-content/")
+      .then((res) => {
+        if (!cancelled && res.data?.event) setEventInfo(res.data.event);
+      })
+      .catch(() => {
+        /* keep the static fallback in Ticket.jsx on error */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [result, setResult] = useState(null);
   const ticketRef = useRef(null);
 
@@ -174,6 +190,7 @@ export default function Register() {
               leaderPhone={result.leaderPhone}
               members={result.members}
               memberCount={result.memberCount}
+              event={eventInfo}
             />
           </div>
           <div className="mt-8 flex flex-col items-center gap-3">

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import DownloadPdfButton from "../components/DownloadPdfButton";
 import { api } from "../lib/api";
-import { EVENT, TRACKS } from "../lib/constants";
+import { EVENT as STATIC_EVENT, TRACKS } from "../lib/constants";
 import logo from "../assets/logo.png";
 
 const MAX_TOTAL_TEAM_SIZE = 5; // leader + members, must match backend serializers.py
@@ -37,6 +37,23 @@ export default function TeamDashboard() {
   const summaryRef = useRef(null);
   const summaryWrapRef = useRef(null);
   const [cardScale, setCardScale] = useState(1);
+  const [eventInfo, setEventInfo] = useState(null);
+  const EVENT = { ...STATIC_EVENT, ...eventInfo };
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get("/site-content/")
+      .then((res) => {
+        if (!cancelled && res.data?.event) setEventInfo(res.data.event);
+      })
+      .catch(() => {
+        /* keep the static fallback on error */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     function updateScale() {

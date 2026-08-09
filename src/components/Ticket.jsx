@@ -1,10 +1,11 @@
 import { forwardRef } from "react";
-import { EVENT } from "../lib/constants";
+import { EVENT as STATIC_EVENT } from "../lib/constants";
 
 const Ticket = forwardRef(function Ticket(
-  { teamId, teamName, track, leaderName, leaderRollNo, leaderEmail, leaderPhone, members = [], memberCount },
+  { teamId, teamName, track, leaderName, leaderRollNo, leaderEmail, leaderPhone, members = [], memberCount, event },
   ref
 ) {
+  const EVENT = { ...STATIC_EVENT, ...event };
   return (
     <div
       ref={ref}

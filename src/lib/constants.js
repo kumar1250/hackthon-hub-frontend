@@ -1,10 +1,10 @@
 // Edit these to match your actual event details.
 export const EVENT = {
-  name: "CODE ODALREVU",
-  tagline: "24-Hour Internal Hackathon",
+  name: "Hackathon-BVCE",
+  tagline: "6-Hour Internal Hackathon",
   college: "Bonam Venkata Chalamayya Engineering College",
   place: "Odalrevu",
-  dateLabel: "Hackathon Day 2026 • 22nd August 2026",
+  dateLabel: "Hackathon Day 2026 • 12 August 2026",
   venueLabel: "Bonam Venkata Chalamayya Engineering College Beach Road, Odalrevu — Andhra Pradesh, India",
 };
 
