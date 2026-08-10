@@ -294,7 +294,7 @@ export default function Register() {
                       value={form.college}
                       onChange={(e) => update("college", e.target.value)}
                       className={inputClass}
-                      placeholder="If not BVC Engineering College"
+                      placeholder="Enter college Name"
                     />
                   </Field>
                 </div>
