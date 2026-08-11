@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Register from "./pages/Register";
+// import Register from "./pages/Register";
 import ProblemStatements from "./pages/ProblemStatements";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -20,7 +20,7 @@ export default function App() {
       <NoiseOverlay />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
+        {/* <Route path="/register" element={<Register />} /> */}
         <Route path="/problem-statements" element={<ProblemStatements />} />
         <Route path="/team/login" element={<TeamLogin />} />
         <Route
