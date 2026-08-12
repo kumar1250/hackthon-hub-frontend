@@ -20,7 +20,7 @@ export default function App() {
       <NoiseOverlay />
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/register" element={<Register />} /> */}
+        <Route path="/register" element={<Register />} />
         <Route path="/problem-statements" element={<ProblemStatements />} />
         <Route path="/team/login" element={<TeamLogin />} />
         <Route
