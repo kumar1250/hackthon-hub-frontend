@@ -1,21 +1,21 @@
-// Edit these to match your actual event details.
+
+// Event details from the IDEA CONTEST 2.0 poster
 export const EVENT = {
-  name: "BVCE-EVENT",
-  tagline: "6-Hour Internal Event",
+  name: "IDEA CONTEST 2.0",
+  tagline: "INNOVATE TODAY, IMPACT TOMORROW",
   college: "Bonam Venkata Chalamayya Engineering College",
   place: "Odalrevu",
-  dateLabel: "Event Day 2026 • 12 August 2026",
-  venueLabel: "Bonam Venkata Chalamayya Engineering College Beach Road, Odalrevu — Andhra Pradesh, India",
+  dateLabel: "01 September 2026",
+  venueLabel: "CSE Seminar Hall",
 };
 
 export const TRACKS = [
-  "AI / ML",
-  "Web Development",
-  "App Development",
-  "Cybersecurity",
-  "IoT & Hardware",
-  "Open Innovation",
+  "Innovation & Originality",
+  "Problem Relevance",
+  "Technical Feasibility",
+  "Social / Industry Impact",
+  "Presentation & Q&A",
 ];
 
-export const MIN_TEAM_SIZE = 1;
+export const MIN_TEAM_SIZE = 2;
 export const MAX_TEAM_SIZE = 5;
