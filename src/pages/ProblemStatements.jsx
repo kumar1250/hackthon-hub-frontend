@@ -36,7 +36,7 @@ export default function ProblemStatements() {
             </span>
           </h1>
           <p className="mt-3 max-w-xl text-sm text-mist sm:text-base">
-            Browse the problem statements available for this hackathon and
+            Browse the problem statements available for this Event and
             pick one that fits your team's track and interests.
           </p>
 

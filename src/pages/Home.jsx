@@ -276,9 +276,9 @@ export default function Home() {
         </Reveal>
       </section>
 
-      {/* Hackathon details */}
+      {/* Event details */}
       <section className="mx-auto max-w-5xl border-t border-line/70 py-12 sm:py-16">
-        <SectionHeader index="03" title="Hackathon details" accent="from-teal to-sky" />
+        <SectionHeader index="03" title="Event details" accent="from-teal to-sky" />
 
         <div className="mt-6 grid gap-5 lg:grid-cols-2">
           <Reveal>

@@ -164,7 +164,7 @@ const Ticket = forwardRef(function Ticket(
               color: "#475569",
             }}
           >
-            Dear {leaderName || teamName}, congratulations on completing your registration. This letter confirms your team registration for the hackathon, with the details recorded below.
+            Dear {leaderName || teamName}, congratulations on completing your registration. This letter confirms your team registration for the Event, with the details recorded below.
           </p>
         </div>
 
@@ -272,7 +272,7 @@ const Ticket = forwardRef(function Ticket(
             <li>02 Keep this acknowledgement ready at check-in.</li>
             <li>03 Bring your team details and registration confirmation.</li>
             <li>04 Stay on schedule and follow the event instructions.</li>
-            <li>05 Enjoy the hackathon and have fun collaborating.</li>
+            <li>05 Enjoy the Event and have fun collaborating.</li>
           </ol>
         </div>
 
